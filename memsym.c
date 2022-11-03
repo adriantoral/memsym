@@ -16,17 +16,25 @@ typedef struct
 	unsigned char etiqueta;
 	unsigned char datos[TAM_LINEA];
 }
-cacheLine_t;
+cacheLinea_t;
+
+void limpiaCache(cacheLinea_t tbl[NUM_FILAS])
+{
+}
+
+void vuelcaCache(cacheLinea_t *tbl)
+{
+}
+
+void parseaAddr(unsigned int addr, int *etiqueta, int *palabra, int *linea, int *bloque)
+{
+}
+
+void trataFallo(cacheLinea_t *tbl, char *memoriaRam, int etiqueta, int linea, int bloque)
+{
+}
 
 int main(int argc, char **argv)
 {
-	unsigned int globalTime = 0,
-				 numFail = 0;
-
-	cacheLine_t cache = {.etiqueta = 0xFF};
-	for (int i=0; i<TAM_LINEA; i++) cache.datos[i] = (char) 0x23F;
-
-	unsigned char simulRam[4096];
-
 	return 0;
 }
