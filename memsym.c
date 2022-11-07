@@ -1,4 +1,5 @@
 /* Author : Adrian Toral */
+/* Author : Miguel Gracia */
 /* Codigo : Simulador de memoria cache */
 /* Fecha  : 31-10-2022 */
 
