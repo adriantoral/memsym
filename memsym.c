@@ -15,9 +15,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define NUM_FILAS 4
-#define TAM_LINEA 8
-#define MAX_LINEA 100
+#define NUM_FILAS 8
+#define TAM_LINEA 16
+#define TAM_CADENA 100
+#define TAM_RAM 4096
 #define LRAM 1024
 
 typedef struct
@@ -44,6 +45,14 @@ void LimpiarCACHE(T_CACHE_LINE tbl[NUM_FILAS])
 
 void VolcarCACHE(T_CACHE_LINE *tbl)
 {
+	/* Funcion que muestra por pantalla los datos guardados en la memoria cache */
+
+	for(int i=0; i<NUM_FILAS; i++)
+	{
+		printf("ETQ: %02X   Data ",tbl[i].ETQ);
+		for(int j=0; j<TAM_LINEA; j++) printf("%02X ",tbl[i].Data[j]);
+		printf("\n");
+	}
 }
 
 void ParsearDireccion(unsigned int addr, int *ETQ, int *palabra, int *linea, int *bloque)
@@ -58,26 +67,32 @@ int main(int argc, char **argv)
 {
 	// Inicializacion de variables
 	int globalTime = 0,
-		numeroFallos = 0;
+		numeroFallos = 0,
+		direccion = 0; // Direccion de memoria en hexadecimal
 
-	T_CACHE_LINE memoriaCache[16]; // Memoria cache
+	char memoriaRAM[TAM_RAM]; // Memoria RAM
 
-	char memoriaRAM[4096], // Memoria RAM
-		 direccion[3]; // Direccion de memoria en hexadecimal
+	T_CACHE_LINE memoriaCache[NUM_FILAS]; // Memoria cache
 
 	// Gestion memoria cache
 	LimpiarCACHE(memoriaCache);
 
-	// Gestion memoria 
-	FILE *contentsRam = fopen("CONTENTS_RAM.bin", "r"); // Fichero temporal del .bin
-	fgets(memoriaRAM, 4096, contentsRam); // Guardar el .bin en memoria RAM (solo los 4096 caracteres de la primera linea)
-
-	// Gestion direcciones de memoria
+	// Gestion memoria y direcciones de memoria
+	FILE *contentsRam = fopen("CONTENTS_RAM.bin", "rb"); // Fichero temporal del .bin
 	FILE *contentsDir = fopen("accesos_memoria.txt", "r"); // Fichero temporal del .txt
-	fgets(direccion, 3, contentsDir); // Guardad la primera linea del .txt en direccion (2 caracteres)
 
-	// Mostrar contenido de la RAM
-	printf("%s\n", memoriaRAM);
+	if (!contentsRam || !contentsDir) // Comprueba si existen los ficheros
+	{
+		printf("Los ficheros no existen. Reviselos.\n");
+		return -1;
+	}
+
+	// Lectura de los contenidos
+	fread(memoriaRAM, TAM_RAM, 1, contentsRam); // Guardar el .bin en memoria RAM (4096 caracteres)
+	fscanf(contentsDir, "%x", &direccion); // Guardar la primera linea del .txt en direccion (numero hexadecimal)
+
+	// Mostrar contenido de la RAM y direccion
+	printf("%s\n%x\n", memoriaRAM, direccion);
 
 	// Cerrar punteros de ficheros
 	fclose(contentsRam); // Cerrar el .bin
