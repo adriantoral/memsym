@@ -64,11 +64,11 @@ int main(int argc, char **argv)
 
 	// Gestion memoria RAM
 	FILE *contentsRam = fopen("CONTENTS_RAM.bin", "r"); // Fichero temporal del .bin
-	fgets(memoriaRAM, 4096, contentsRam); //Guardar el .bin en memoria RAM (solo los 4096 caracteres de la primera linea)
+	fgets(memoriaRAM, 4096, contentsRam); // Guardar el .bin en memoria RAM (solo los 4096 caracteres de la primera linea)
 
 	// Gestion direcciones de memoria
-	FILE *contentsDir = fopen("accesos_memoria.txt", "r");
-	fgets(direccion, 3, contentsDir);
+	FILE *contentsDir = fopen("accesos_memoria.txt", "r"); // Fichero temporal del .txt
+	fgets(direccion, 3, contentsDir); // Guardad la primera linea del .txt en direccion (2 caracteres)
 
 	// Mostrar contenido de la RAM
 	printf("%s\n", memoriaRAM);
