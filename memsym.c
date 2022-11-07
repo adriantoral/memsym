@@ -26,8 +26,19 @@ typedef struct
 }
 cacheLinea_t;
 
-void limpiaCache(cacheLinea_t tbl[NUM_FILAS])
+void limpiaCache(cacheLinea_t *memoriaCache, int tamano)
 {
+	/* Funcion que limpia la memoria cache, es decir, inicializa los valores de la cache a default */
+	/* - Etiqueta: 0xFF */
+	/* - Datos:0x23F */
+
+	for (int i=0; i<tamano; i++) // Inicializacion de la memoria cache
+	{
+		memoriaCache[i].etiqueta = 0xFF; // Todas las etiquetas a 0xFF
+
+		for (int j=0; j<TAM_LINEA; j++)
+			memoriaCache[i].datos[j] = (char) 0x23F; // Todos los datos de las lineas de la memoria cache a 0x23F
+	}
 }
 
 void vuelcaCache(cacheLinea_t *tbl)
@@ -54,13 +65,7 @@ int main(int argc, char **argv)
 		 direccion[3]; // Direccion de memoria en hexadecimal
 
 	// Gestion memoria cache
-	for (int i=0; i<16; i++) // Inicializacion de la memoria cache
-	{
-		memoriaCache[i].etiqueta = 0xFF; // Todas las etiquetas a 0xFF
-
-		for (int j=0; j<TAM_LINEA; j++)
-			memoriaCache[i].datos[j] = (char) 0x23F; // Todos los datos de las lineas de la memoria cache a 0x23F
-	}
+	limpiaCache(memoriaCache, 16);
 
 	// Gestion memoria RAM
 	FILE *contentsRam = fopen("CONTENTS_RAM.bin", "r"); // Fichero temporal del .bin
