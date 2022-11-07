@@ -2,6 +2,14 @@
 /* Codigo : Simulador de memoria cache */
 /* Fecha  : 31-10-2022 */
 
+/*
+
+   El tamano maximo de la memoria principal es de 4096 [2^12 (Bus de memoria)] Bytes
+   El tamano del bloque y el de linea es de 8 Bytes
+   16 Bytes por linea ?
+
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -36,5 +44,39 @@ void trataFallo(cacheLinea_t *tbl, char *memoriaRam, int etiqueta, int linea, in
 
 int main(int argc, char **argv)
 {
+	// Inicializacion de variables
+	int globalTime = 0,
+		numeroFallos = 0;
+
+	cacheLinea_t memoriaCache[16]; // Memoria cache
+
+	char memoriaRAM[4096], // Memoria RAM
+		 direccion[3]; // Direccion de memoria en hexadecimal
+
+	// Gestion memoria cache
+	for (int i=0; i<16; i++) // Inicializacion de la memoria cache
+	{
+		memoriaCache[i].etiqueta = 0xFF; // Todas las etiquetas a 0xFF
+
+		for (int j=0; j<TAM_LINEA; j++)
+			memoriaCache[i].datos[j] = (char) 0x23F; // Todos los datos de las lineas de la memoria cache a 0x23F
+	}
+
+	// Gestion memoria RAM
+	FILE *contentsRam = fopen("CONTENTS_RAM.bin", "r"); // Fichero temporal del .bin
+	fgets(memoriaRAM, 4096, contentsRam); //Guardar el .bin en memoria RAM (solo los 4096 caracteres de la primera linea)
+
+	// Gestion direcciones de memoria
+	FILE *contentsDir = fopen("accesos_memoria.txt", "r");
+	fgets(direccion, 3, contentsDir);
+
+	// Mostrar contenido de la RAM
+	printf("%s\n", memoriaRAM);
+
+	// Cerrar punteros de ficheros
+	fclose(contentsRam); // Cerrar el .bin
+	fclose(contentsDir); // Cerrar el .txt
+
 	return 0;
 }
+
