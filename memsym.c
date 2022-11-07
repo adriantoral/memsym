@@ -22,35 +22,35 @@
 
 typedef struct
 {
-	unsigned char etiqueta;
-	unsigned char datos[TAM_LINEA];
+	unsigned char ETQ;
+	unsigned char Data[TAM_LINEA];
 }
-cacheLinea_t;
+T_CACHE_LINE;
 
-void limpiaCache(cacheLinea_t *memoriaCache, int tamano)
+void LimpiarCACHE(T_CACHE_LINE tbl[NUM_FILAS])
 {
 	/* Funcion que limpia la memoria cache, es decir, inicializa los valores de la cache a default */
 	/* - Etiqueta: 0xFF */
 	/* - Datos:0x23F */
 
-	for (int i=0; i<tamano; i++) // Inicializacion de la memoria cache
+	for (int i=0; i<NUM_FILAS; i++) // Inicializacion de la memoria cache
 	{
-		memoriaCache[i].etiqueta = 0xFF; // Todas las etiquetas a 0xFF
+		tbl[i].ETQ = 0xFF; // Todas las etiquetas a 0xFF
 
 		for (int j=0; j<TAM_LINEA; j++)
-			memoriaCache[i].datos[j] = (char) 0x23F; // Todos los datos de las lineas de la memoria cache a 0x23F
+			tbl[i].Data[j] = (char) 0x23F; // Todos los datos de las lineas de la memoria cache a 0x23F
 	}
 }
 
-void vuelcaCache(cacheLinea_t *tbl)
+void VolcarCACHE(T_CACHE_LINE *tbl)
 {
 }
 
-void parseaAddr(unsigned int addr, int *etiqueta, int *palabra, int *linea, int *bloque)
+void ParsearDireccion(unsigned int addr, int *ETQ, int *palabra, int *linea, int *bloque)
 {
 }
 
-void trataFallo(cacheLinea_t *tbl, char *memoriaRam, int etiqueta, int linea, int bloque)
+void TratarFallo(T_CACHE_LINE *tbl, char *MRAM, int ETQ, int linea, int bloque)
 {
 }
 
@@ -60,15 +60,15 @@ int main(int argc, char **argv)
 	int globalTime = 0,
 		numeroFallos = 0;
 
-	cacheLinea_t memoriaCache[16]; // Memoria cache
+	T_CACHE_LINE memoriaCache[16]; // Memoria cache
 
 	char memoriaRAM[4096], // Memoria RAM
 		 direccion[3]; // Direccion de memoria en hexadecimal
 
 	// Gestion memoria cache
-	limpiaCache(memoriaCache, 16);
+	LimpiarCACHE(memoriaCache);
 
-	// Gestion memoria RAM
+	// Gestion memoria 
 	FILE *contentsRam = fopen("CONTENTS_RAM.bin", "r"); // Fichero temporal del .bin
 	fgets(memoriaRAM, 4096, contentsRam); // Guardar el .bin en memoria RAM (solo los 4096 caracteres de la primera linea)
 
