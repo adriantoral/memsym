@@ -47,10 +47,10 @@ void VolcarCACHE(T_CACHE_LINE *tbl)
 {
 	/* Funcion que muestra por pantalla los datos guardados en la memoria cache */
 
-	for(int i=0; i<NUM_FILAS; i++)
+	for (int i=0; i<NUM_FILAS; i++)
 	{
 		printf("ETQ: %02X   Data ",tbl[i].ETQ);
-		for(int j=0; j<TAM_LINEA; j++) printf("%02X ",tbl[i].Data[j]);
+		for (int j=0; j<TAM_LINEA; j++) printf("%02X ",tbl[i].Data[j]);
 		printf("\n");
 	}
 }
@@ -83,7 +83,7 @@ int main(int argc, char **argv)
 
 	if (!contentsRam || !contentsDir) // Comprueba si existen los ficheros
 	{
-		printf("Los ficheros no existen. Reviselos.\n");
+		printf(!contentsRam ? "No existe el fichero CONTENTS_RAM.bin\n" : "No existe el fichero accesos_memoria.txt\n");
 		return -1;
 	}
 
