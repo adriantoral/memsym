@@ -3,14 +3,6 @@
 /* Codigo : Simulador de memoria cache */
 /* Fecha  : 31-10-2022 */
 
-/*
-
-   El tamano maximo de la memoria principal es de 4096 [2^12 (Bus de memoria)] Bytes
-   El tamano del bloque y el de linea es de 8 Bytes
-   16 Bytes por linea ?
-
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,6 +10,7 @@
 #define NUM_FILAS 8
 #define TAM_LINEA 16
 #define TAM_CADENA 100
+#define TAM_CACHE 256
 #define TAM_RAM 4096
 #define LRAM 1024
 
@@ -57,6 +50,12 @@ void VolcarCACHE(T_CACHE_LINE *tbl)
 
 void ParsearDireccion(unsigned int addr, int *ETQ, int *palabra, int *linea, int *bloque)
 {
+	/* Funcion que convierte los bits de la addr a ETQ, palabra, linea, bloque */
+	/* ETQ: 5 primeros bits de la addr */
+	/* palabra: 4 ultimos bits de la addr */
+	/* linea: 3 bits despues de la ETQ de la addr */
+	/* bloque: 8 primeros bits de la addr (ETQ + linea) */
+
 	*ETQ = (addr & 0b111110000000) >> 7;
 	*palabra = (addr & 0b000000001111);
 	*linea = (addr & 0b1110000) >> 4;
@@ -65,6 +64,8 @@ void ParsearDireccion(unsigned int addr, int *ETQ, int *palabra, int *linea, int
 
 void TratarFallo(T_CACHE_LINE *tbl, char *MRAM, int ETQ, int linea, int bloque)
 {
+	/* Funcion que carga los datos de la MRAM */
+
 	int posicionInicial = bloque * TAM_LINEA,
 		posicionFinal = posicionInicial - 1 + TAM_LINEA;
 
@@ -78,11 +79,18 @@ void TratarFallo(T_CACHE_LINE *tbl, char *MRAM, int ETQ, int linea, int bloque)
 int main(int argc, char **argv)
 {
 	// Inicializacion de variables
-	int globalTime = 0,
-		numeroFallos = 0,
-		direccion = 0; // Direccion de memoria en hexadecimal
+	int globalTime = 0, // Tiempo total
+		numeroFallos = 0, // Numero de fallos de la cache
+		numeroAccesos = 0; // Numero de accesos de la cache
 
-	char memoriaRAM[TAM_RAM]; // Memoria RAM
+	int addr = 0, // Direccion de memoria
+		EQT = 0, // Etiqueta de la cache
+		linea = 0, // Linea de la cache
+		palabra = 0, // Palabra de la cache
+		bloque = 0; // Bloque de la cache (ETQ + linea)
+
+	unsigned char memoriaRAM[TAM_RAM], // Memoria RAM
+				  contenidoCache[TAM_CACHE]; // Contenido cache
 
 	T_CACHE_LINE memoriaCache[NUM_FILAS]; // Memoria cache
 
@@ -101,10 +109,10 @@ int main(int argc, char **argv)
 
 	// Lectura de los contenidos
 	fread(memoriaRAM, TAM_RAM, 1, contentsRam); // Guardar el .bin en memoria RAM (4096 caracteres)
-	fscanf(contentsDir, "%x", &direccion); // Guardar la primera linea del .txt en direccion (numero hexadecimal)
+	fscanf(contentsDir, "%x", &addr); // Guardar la primera linea del .txt en direccion (numero hexadecimal)
 
 	// Mostrar contenido de la RAM y direccion
-	printf("%s\n%x\n", memoriaRAM, direccion);
+	printf("%s\n%x\n", memoriaRAM, addr);
 
 	// Cerrar punteros de ficheros
 	fclose(contentsRam); // Cerrar el .bin
