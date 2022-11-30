@@ -65,6 +65,14 @@ void ParsearDireccion(unsigned int addr, int *ETQ, int *palabra, int *linea, int
 
 void TratarFallo(T_CACHE_LINE *tbl, char *MRAM, int ETQ, int linea, int bloque)
 {
+	int posicionInicial = bloque * TAM_LINEA,
+		posicionFinal = posicionInicial - 1 + TAM_LINEA;
+
+	printf("Cargando bloque %02X en la linea %02X\n", bloque, linea);
+
+	tbl[linea].ETQ = (unsigned char) ETQ;
+	for (int i=posicionFinal, j=0; i>=posicionInicial; i--)
+		tbl[linea].Data[j++] = (unsigned char) MRAM[i];
 }
 
 int main(int argc, char **argv)
