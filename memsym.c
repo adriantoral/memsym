@@ -57,6 +57,10 @@ void VolcarCACHE(T_CACHE_LINE *tbl)
 
 void ParsearDireccion(unsigned int addr, int *ETQ, int *palabra, int *linea, int *bloque)
 {
+	*ETQ = (addr & 0b111110000000) >> 7;
+	*palabra = (addr & 0b000000001111);
+	*linea = (addr & 0b1110000) >> 4;
+	*bloque = (addr & 0b111111110000) >> 4;
 }
 
 void TratarFallo(T_CACHE_LINE *tbl, char *MRAM, int ETQ, int linea, int bloque)
