@@ -84,7 +84,7 @@ int main(int argc, char **argv)
 		numeroAccesos = 0; // Numero de accesos de la cache
 
 	int addr = 0, // Direccion de memoria
-		EQT = 0, // Etiqueta de la cache
+		ETQ = 0, // Etiqueta de la cache
 		linea = 0, // Linea de la cache
 		palabra = 0, // Palabra de la cache
 		bloque = 0; // Bloque de la cache (ETQ + linea)
@@ -109,10 +109,26 @@ int main(int argc, char **argv)
 
 	// Lectura de los contenidos
 	fread(memoriaRAM, TAM_RAM, 1, contentsRam); // Guardar el .bin en memoria RAM (4096 caracteres)
-	fscanf(contentsDir, "%x", &addr); // Guardar la primera linea del .txt en direccion (numero hexadecimal)
+	
+	while (fscanf(contentsDir, "%x", &addr) != EOF) // Guardar la primera linea del .txt en direccion (numero hexadecimal)
+	{
+		ParsearDireccion(addr, &ETQ, &palabra, &linea, &bloque);
+		globalTime++;
 
-	// Mostrar contenido de la RAM y direccion
-	printf("%s\n%x\n", memoriaRAM, addr);
+		// Comparamos las etiquetas
+		if (ETQ != memoriaCache[linea].ETQ)
+		{
+			printf("T: %d, Fallo cache: %d, ADDR: %04X, ETQ: %X, Linea: %02X, Palabra: %02X, Bloque: %02X\n", globalTime, ++numeroFallos, addr, ETQ, linea, palabra, bloque);
+			globalTime += 10;
+
+			TratarFallo(memoriaCache, memoriaRAM, ETQ, linea, bloque);
+		}
+
+		numeroAccesos++;
+		printf("T: %d, Acierto cache ADDR: %04X, ETQ: %X, Linea: %02X, Palabra: %02X, Datos: %02X\n", globalTime, addr, ETQ, linea, palabra, memoriaCache[linea].Data[15 - palabra]);
+
+		VolcarCACHE(memoriaCache);
+	}
 
 	// Cerrar punteros de ficheros
 	fclose(contentsRam); // Cerrar el .bin
@@ -120,4 +136,6 @@ int main(int argc, char **argv)
 
 	return 0;
 }
+
+
 
