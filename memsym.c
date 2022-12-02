@@ -105,6 +105,7 @@ int main(int argc, char **argv)
 	// Gestion memoria y direcciones de memoria
 	FILE *contentsRam = fopen("CONTENTS_RAM.bin", "rb"); // Fichero temporal del .bin
 	FILE *contentsDir = fopen("accesos_memoria.txt", "r"); // Fichero temporal del .txt
+	FILE *contentsCache = fopen("CONTENTS_CACHE.bin", "w+b"); // Fichero temporal del resultado
 
 	if (!contentsRam || !contentsDir) // Comprueba si existen los ficheros
 	{
@@ -143,9 +144,17 @@ int main(int argc, char **argv)
 
 	printf("Accesos totales: %d ; Fallos totales: %d ; Tiempo medio: %lf\nTexto leido: %s\n", numeroAccesos, numeroFallos, (double) globalTime / numeroAccesos, resultado);
 
+	// Guardar los resultados en el fichero
+	for (int i=0; i<NUM_FILAS; i++)
+	{
+		fprintf(contentsCache, "\nETQ: %02X   Data ", memoriaCache[i].ETQ);
+		for(int j=0; j<TAM_LINEA; j++) fprintf(contentsCache, "%02X ", memoriaCache[i].Data[j]);
+	}
+
 	// Cerrar punteros de ficheros
 	fclose(contentsRam); // Cerrar el .bin
 	fclose(contentsDir); // Cerrar el .txt
+	fclose(contentsCache); // Cerrar el .bin
 
 	return 0;
 }
